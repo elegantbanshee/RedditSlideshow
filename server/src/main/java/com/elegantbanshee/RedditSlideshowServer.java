@@ -56,7 +56,7 @@ public class RedditSlideshowServer {
             int mixed_index = 0;
             while (mixed_index != subreddits.length) {
                 for (ArrayList<String> urls_array : urls) {
-                    if (urls_array.size() > urls_index[mixed_index]) {
+                    if (urls_array.size() > urls_index[mixed_index] && urls_index[mixed_index] != -1) {
                         if (urls_index[mixed_index] != -1) {
                             String url = urls_array.get(urls_index[mixed_index]);
                             mixedUrls.add(url);
