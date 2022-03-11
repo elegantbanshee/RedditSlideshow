@@ -1,0 +1,22 @@
+"EleganBansheeCom" Copyright (C) 2017 Rolando Islas, 2018 Frozen Iron Software LLC. All Rights Reserved.
+
+EleganBansheeCom is a Roku/Apple TV (media player) app for connecting to Twitch (live streaming service)
+and watching live streams. The EleganBansheeCom website/API serves as a proxy/cache for all request to
+Twitch.
+
+EleganBansheeCom is not affiliated with Twitch Interactive, Inc., Roku, Inc., or Apple, Inc.
+
+This file is part of the EleganBansheeCom.
+
+EleganBansheeCom is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+EleganBansheeCom is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with EleganBansheeCom.  If not, see <http://www.gnu.org/licenses/>.
