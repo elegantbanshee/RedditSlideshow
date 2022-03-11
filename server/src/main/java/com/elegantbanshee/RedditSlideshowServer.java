@@ -1,5 +1,6 @@
 package com.elegantbanshee;
 
+import com.elegantbanshee.util.RedditBot;
 import com.goebl.david.Webb;
 import com.google.gson.Gson;
 import spark.ModelAndView;
@@ -12,10 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RedditSlideshowServer {
-
-    private static final String[] subreddits = {
-            "wallpapers"
-    };
 
     static void getGeneric(String path, String templatePath) {
         get(path, (request, response) -> {
@@ -30,6 +27,7 @@ public class RedditSlideshowServer {
             webb.setBaseUri("https://reddit.com");
             webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RedditSlideshow/1.0");
             webb.setDefaultHeader("NSFW-ON", "TRUE");
+            webb.setDefaultHeader("Authorization", String.format("Bearer %s", RedditBot.bearerToken));
 
             String[] subreddits = request.body().split("[+\\s]");
             ArrayList<ArrayList<String>> urls = new ArrayList<>();

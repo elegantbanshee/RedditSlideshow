@@ -2,6 +2,7 @@ package com.elegantbanshee;
 
 import com.elegantbanshee.data.Constants;
 import com.elegantbanshee.util.Logger;
+import com.elegantbanshee.util.RedditBot;
 
 import java.util.logging.Level;
 
@@ -23,6 +24,12 @@ public class RedditSlideshow {
         catch (NumberFormatException e) {
             Logger.warn("Failed to parse PORT env var: %s", portString);
         }
+        // Reddit Login
+        String redditUsername = System.getenv("REDDIT_USERNAME");
+        String redditPassword = System.getenv("REDDIT_PASSWORD");
+        String redditClientId = System.getenv("REDDIT_CLIENT_ID");
+        String redditClientSecret = System.getenv("REDDIT_CLIENT_SECRET");
+        RedditBot.login(redditUsername, redditPassword, redditClientId, redditClientSecret);
         // Set values
         port(port);
         staticFiles.location("/static/");
