@@ -31,7 +31,9 @@ public class RedditSlideshowServer {
             webb.setBaseUri("https://reddit.com");
             webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RedditSlideshow/1.0");
             webb.setDefaultHeader("NSFW-ON", "TRUE");
-            webb.setDefaultHeader("Authorization", "Bearer " + bearerToken);
+
+            if (!bearerToken.isEmpty())
+                webb.setDefaultHeader("Authorization", "Bearer " + bearerToken);
 
             String[] subreddits = request.body().split("[+\\s]");
             ArrayList<ArrayList<String>> urls = new ArrayList<>();
