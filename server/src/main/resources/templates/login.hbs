@@ -1,0 +1,10 @@
+Redirecting...
+<script type="text/javascript">
+    var url = "https://www.reddit.com/api/v1/authorize?client_id=sB2IicXBsuTm20R43FBXjQ&response_type=code&state=RANDOM_STRING&redirect_uri=http://localhost:5000/bot&duration=temporary&scope=*"
+    var randomString = ""
+    for (var i = 0; i < 10; i++) {
+        randomString += (Math.random() * 100).toString()
+    }
+    url = url.replace("RANDOM_STRING", randomString)
+    window.location.href = url
+</script>

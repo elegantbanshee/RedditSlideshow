@@ -2,7 +2,6 @@ package com.elegantbanshee;
 
 import com.elegantbanshee.data.Constants;
 import com.elegantbanshee.util.Logger;
-import com.elegantbanshee.util.RedditBot;
 
 import java.util.logging.Level;
 
@@ -29,7 +28,6 @@ public class RedditSlideshow {
         String redditPassword = System.getenv("REDDIT_PASSWORD");
         String redditClientId = System.getenv("REDDIT_CLIENT_ID");
         String redditClientSecret = System.getenv("REDDIT_CLIENT_SECRET");
-        RedditBot.login(redditUsername, redditPassword, redditClientId, redditClientSecret);
         // Set values
         port(port);
         staticFiles.location("/static/");
@@ -38,6 +36,8 @@ public class RedditSlideshow {
         RedditSlideshowServer.getGeneric("/", "index.hbs");
         RedditSlideshowServer.getGeneric("/r/:reddits", "index.hbs");
         RedditSlideshowServer.postApi("/api/data");
+        RedditSlideshowServer.getGeneric("/login", "login.hbs");
+        RedditSlideshowServer.getBotAuth("/bot");
 	}
 
 	/**
