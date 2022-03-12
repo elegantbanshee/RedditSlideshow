@@ -11,7 +11,7 @@ buildConfig {
 
 jar {
     manifest {
-        attributes "Main-Class": "com.elegantbanshee.ElegantBansheeCom"
+        attributes "Main-Class": "com.elegantbanshee.RedditSlideshow"
     }
     from {configurations.compile.collect {zipTree(it)}}
 }
