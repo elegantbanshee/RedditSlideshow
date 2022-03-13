@@ -21,11 +21,13 @@ function play() {
         var img = document.getElementById("image");
         var video = document.getElementById("video");
 
-        if (!video.ended && !firstRun)
-            return;
-        firstRun = false
+        var isImage = images[index].search(".mp4") === -1;
 
-        if (images[index].search(".mp4") === -1) {
+        if (!isImage && (!video.ended && video.currentTime > 0 && !firstRun))
+            return;
+        firstRun = false;
+
+        if (isImage) {
             img.src = images[index];
             img.style.display = "block";
             video.style.display = "none";
