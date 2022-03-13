@@ -101,7 +101,7 @@ public class RedditSlideshowServer {
     public static void getBotAuth(String path) {
         get(path, (request, response) -> {
             Webb webb = Webb.create();
-            webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RedditSlideshow/1.0");
+            webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RSlideshow/1.0");
 
 
             String passwordString = String.format("%s:%s", System.getenv("REDDIT_CLIENT_ID"),
