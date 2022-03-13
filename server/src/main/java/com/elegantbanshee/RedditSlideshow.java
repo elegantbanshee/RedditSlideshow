@@ -23,11 +23,6 @@ public class RedditSlideshow {
         catch (NumberFormatException e) {
             Logger.warn("Failed to parse PORT env var: %s", portString);
         }
-        // Reddit Login
-        String redditUsername = System.getenv("REDDIT_USERNAME");
-        String redditPassword = System.getenv("REDDIT_PASSWORD");
-        String redditClientId = System.getenv("REDDIT_CLIENT_ID");
-        String redditClientSecret = System.getenv("REDDIT_CLIENT_SECRET");
         // Set values
         port(port);
         staticFiles.location("/static/");

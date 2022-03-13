@@ -43,13 +43,14 @@ public class RedditSlideshowServer {
             for (String subreddit : subreddits) {
                 com.goebl.david.Response <String> html = webb.get("/r/" + subreddit).ensureSuccess().asString();
                 //Pattern pattern = Pattern.compile("https:\\/\\/[A-Za-z\\.]*\\/[A-Za-z\\d]*\\.(?:jpeg|png|jpg|gif)", Pattern.MULTILINE);
-                Pattern pattern = Pattern.compile("https:\\/\\/(?:i.redd.it)*\\/[A-Za-z\\d]*\\.(?:jpeg|png|jpg|gif)");
+                Pattern pattern = Pattern.compile("https:\\/\\/(?:i.redd.it|i.imgur.com)*\\/[A-Za-z\\d]*\\.(?:jpeg|png|jpg|gifv|gif)");
                 Matcher matcher = pattern.matcher(html.getBody());
 
                 if (urls.size() == index)
                     urls.add(new ArrayList<>());
                 while (matcher.find()) {
-                    urls.get(index).add(matcher.group());
+                    String cleanUrl = convertGifvToMp4Url(matcher.group());
+                    urls.get(index).add(cleanUrl);
                 }
                 index += 1;
             }
@@ -83,6 +84,10 @@ public class RedditSlideshowServer {
 
             return new Gson().toJson(mixedUrls);
         });
+    }
+
+    private static String convertGifvToMp4Url(String url) {
+        return url.replace(".gifv", ".mp4");
     }
 
     private static boolean shouldEndLoop(int[] urls_index) {
