@@ -1,5 +1,6 @@
 var images = [];
 var index = 0;
+var firstRun = true;
 
 function get_images() {
     var request = new XMLHttpRequest();
@@ -22,17 +23,18 @@ function play() {
 
         var isImage = images[index].search(".mp4") === -1;
 
+        if (!isImage && (!video.ended && video.currentTime > 0 && !firstRun))
+            return;
+        firstRun = false;
+
         if (isImage) {
             if (!img.complete)
                 return;
-
             img.src = images[index];
             img.style.display = "block";
             video.style.display = "none";
         }
         else {
-            if (!video.ended && video.currentTime > 0)
-                return;
             video.src = images[index];
             video.style.display = "block";
             img.style.display = "none";
