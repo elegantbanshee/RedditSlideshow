@@ -22,14 +22,15 @@ function play() {
         var video = document.getElementById("video");
 
         var isImage = images[index].search(".mp4") === -1;
+        var isCurrentImage = img.style.display === "block";
 
-        if (!isImage && (!video.ended && video.currentTime > 0 && !firstRun))
+        if (!isCurrentImage && !video.ended && video.currentTime > 0)
             return;
-        firstRun = false;
+
+        if (isCurrentImage && !img.complete)
+            return;
 
         if (isImage) {
-            if (!img.complete)
-                return;
             img.src = images[index];
             img.style.display = "block";
             video.style.display = "none";
