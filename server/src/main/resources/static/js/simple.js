@@ -31,6 +31,12 @@ function play() {
             return;
 
         if (isImage) {
+            var newImg = document.createElement("img");
+            newImg.id = "image"
+            document.body.removeChild(img);
+            document.body.appendChild(newImg);
+            img = newImg;
+
             img.src = images[index];
             img.style.display = "block";
             video.style.display = "none";
