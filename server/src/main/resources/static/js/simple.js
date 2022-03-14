@@ -1,6 +1,6 @@
 var images = [];
 var index = 0;
-var firstRun = true;
+var playInterval = null;
 
 function get_images() {
     var request = new XMLHttpRequest();
@@ -21,7 +21,7 @@ function play() {
         var img = document.getElementById("image");
         var video = document.getElementById("video");
 
-        var isImage = images[index].search(".mp4") === -1;
+        // CHeck if a stall is in order
         var isCurrentImage = img.style.display === "block";
 
         if (!isCurrentImage && !video.ended && video.currentTime > 0)
@@ -29,6 +29,9 @@ function play() {
 
         if (isCurrentImage && !img.complete)
             return;
+
+        // Update to next image
+        var isImage = images[index].search(".mp4") === -1;
 
         if (isImage) {
             var newImg = document.createElement("img");
@@ -51,13 +54,22 @@ function play() {
     }
 }
 
-function set_timeinterval() {
+function onVideoEnded() {
+    clearInterval(playInterval);
     setInterval(play, 5000);
+    play();
+}
+
+function initPlayLoop() {
+    playInterval = setInterval(play, 5000);
+
+    var video = document.getElementById("video");
+    video.addEventListener("ended", onVideoEnded);
 }
 
 function main() {
     get_images();
-    set_timeinterval();
+    initPlayLoop();
 }
 
 main();
