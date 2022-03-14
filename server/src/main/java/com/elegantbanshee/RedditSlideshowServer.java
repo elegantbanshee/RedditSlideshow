@@ -55,35 +55,31 @@ public class RedditSlideshowServer {
                 index += 1;
             }
 
-            ArrayList<String> mixedUrls = new ArrayList<>();
-            int[] urls_index = new int[subreddits.length];
-
-            int mixed_index = 0;
-            while (mixed_index != subreddits.length) {
-                for (ArrayList<String> urls_array : urls) {
-                    if (urls_array.size() > urls_index[mixed_index] && urls_index[mixed_index] != -1) {
-                        if (urls_index[mixed_index] != -1) {
-                            String url = urls_array.get(urls_index[mixed_index]);
-                            mixedUrls.add(url);
-                            urls_index[mixed_index] += 1;
-                        }
-                    }
-                    else {
-                        urls_index[mixed_index] = -1;
-                    }
-
-                    mixed_index += 1;
-                    if (!shouldEndLoop(urls_index) && mixed_index == subreddits.length)
-                        mixed_index = 0;
-                    else {
-                        if (urls.indexOf(urls_array) == urls.size() - 1)
-                            mixed_index = subreddits.length;
-                    }
-                }
-            }
+            ArrayList<String> mixedUrls = mixUrls(urls);
 
             return new Gson().toJson(mixedUrls);
         });
+    }
+
+    private static ArrayList<String> mixUrls(ArrayList<ArrayList<String>> urls) {
+        ArrayList<String> mixedUrls = new ArrayList<>();
+        int index = 0;
+        while (hasUrls(urls)) {
+            ArrayList<String> urlz = urls.get(index);
+            if (urlz.size() > 0) {
+                mixedUrls.add(urlz.remove(0));
+            }
+            index = (index + 1) % urls.size();
+        }
+        return mixedUrls;
+    }
+
+    private static boolean hasUrls(ArrayList<ArrayList<String>> urls) {
+        for (ArrayList<String> urlz : urls) {
+            if (urlz.size() > 0)
+                return true;
+        }
+        return false;
     }
 
     private static String convertGifvToMp4Url(String url) {
