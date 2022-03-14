@@ -56,7 +56,7 @@ function play() {
 
 function onVideoEnded() {
     clearInterval(playInterval);
-    setInterval(play, 5000);
+    playInterval = setInterval(play, 5000);
     play();
 }
 
