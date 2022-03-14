@@ -67,7 +67,9 @@ public class RedditSlideshowServer {
         while (hasUrls(urls)) {
             ArrayList<String> urlz = urls.get(index);
             if (urlz.size() > 0) {
-                mixedUrls.add(urlz.remove(0));
+                String url = urlz.remove(0);
+                if (!mixedUrls.contains(url))
+                    mixedUrls.add(url);
             }
             index = (index + 1) % urls.size();
         }
