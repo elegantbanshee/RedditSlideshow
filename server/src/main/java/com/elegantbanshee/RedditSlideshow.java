@@ -26,7 +26,7 @@ public class RedditSlideshow {
         // Set values
         port(port);
         staticFiles.location("/static/");
-        staticFiles.expireTime(604800); // One Week cache
+        staticFiles.expireTime(60 * 60); // One Week cache
         // Web
         RedditSlideshowServer.getGeneric("/", "index.hbs");
         RedditSlideshowServer.getGeneric("/r/:reddits", "index.hbs");
