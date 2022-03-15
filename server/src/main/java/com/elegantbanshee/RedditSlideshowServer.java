@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 public class RedditSlideshowServer {
 
     private static String bearerToken = "";
+    private static String refreshToken = "";
+    private static long lastRefreshTime = 0;
 
     static void getGeneric(String path, String templatePath) {
         get(path, (request, response) -> {
@@ -27,6 +29,10 @@ public class RedditSlideshowServer {
 
     static void postApi(String path) {
         post(path, (request, response) -> {
+            if (shouldRefreshAccessToken()) {
+                refreshAccessToken();
+            }
+
             Webb webb = Webb.create();
             webb.setBaseUri("https://reddit.com");
             webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RedditSlideshow/1.0");
@@ -61,6 +67,31 @@ public class RedditSlideshowServer {
         });
     }
 
+    private static void refreshAccessToken() {
+        Webb webb = Webb.create();
+        webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RSlideshow/1.0");
+
+        String passwordString = String.format("%s:%s", System.getenv("REDDIT_CLIENT_ID"),
+                System.getenv("REDDIT_CLIENT_SECRET"));
+        String encodedAuth = Base64.getEncoder().encodeToString(passwordString.getBytes(StandardCharsets.UTF_8));
+        webb.setDefaultHeader("Authorization", "Basic " + encodedAuth);
+
+        webb.setBaseUri("https://www.reddit.com/api/v1");
+        webb.setDefaultHeader("Content-Type", "application/x-www-form-urlencoded");
+        Response<JSONObject> json = webb.post("/access_token")
+                .body(String.format("grant_type=refresh_token&refresh_token=%s", refreshToken))
+                //.ensureSuccess()
+                .asJsonObject();
+        bearerToken = (String) json.getBody().get("access_token");
+        refreshToken = (String) json.getBody().get("refresh_token");
+
+        lastRefreshTime = System.currentTimeMillis();
+    }
+
+    private static boolean shouldRefreshAccessToken() {
+        return !refreshToken.isEmpty() && System.currentTimeMillis() - lastRefreshTime > 1 * 60 * 1000;
+    }
+
     private static ArrayList<String> mixUrls(ArrayList<ArrayList<String>> urls) {
         ArrayList<String> mixedUrls = new ArrayList<>();
         int index = 0;
@@ -88,16 +119,11 @@ public class RedditSlideshowServer {
         return url.replace(".gifv", ".mp4");
     }
 
-    private static boolean shouldEndLoop(int[] urls_index) {
-        for (int urlsIndex : urls_index) {
-            if (urlsIndex != -1)
-                return false;
-        }
-        return true;
-    }
-
     public static void getBotAuth(String path) {
         get(path, (request, response) -> {
+            if (!bearerToken.isEmpty())
+                return "Already logged in";
+
             Webb webb = Webb.create();
             webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RSlideshow/1.0");
 
@@ -116,8 +142,18 @@ public class RedditSlideshowServer {
                     //.ensureSuccess()
                     .asJsonObject();
             bearerToken = (String) json.getBody().get("access_token");
+            refreshToken = (String) json.getBody().get("refresh_token");
 
+            lastRefreshTime = System.currentTimeMillis();
             return "Logged in";
+        });
+    }
+
+    public static void getLogin(String path, String templatePath) {
+        get(path, (request, response) -> {
+            Map<String, Object> model = new HashMap<>();
+            model.put("CLIENT_ID", System.getenv("REDDIT_CLIENT_ID"));
+            return new HandlebarsTemplateEngine().render(new ModelAndView(model, templatePath));
         });
     }
 }

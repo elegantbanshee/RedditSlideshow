@@ -31,7 +31,7 @@ public class RedditSlideshow {
         RedditSlideshowServer.getGeneric("/", "index.hbs");
         RedditSlideshowServer.getGeneric("/r/:reddits", "index.hbs");
         RedditSlideshowServer.postApi("/api/data");
-        RedditSlideshowServer.getGeneric("/login", "login.hbs");
+        RedditSlideshowServer.getLogin("/login", "login.hbs");
         RedditSlideshowServer.getBotAuth("/bot");
 	}
 
