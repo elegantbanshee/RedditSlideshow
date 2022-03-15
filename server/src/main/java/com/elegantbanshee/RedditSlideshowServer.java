@@ -36,7 +36,7 @@ public class RedditSlideshowServer {
             Webb webb = Webb.create();
             webb.setBaseUri("https://reddit.com");
             webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RedditSlideshow/1.0");
-            webb.setDefaultHeader("NSFW-ON", "TRUE");
+            webb.setDefaultHeader("NSFW-ON", "ON");
 
             if (!bearerToken.isEmpty())
                 webb.setDefaultHeader("Authorization", "Bearer " + bearerToken);
