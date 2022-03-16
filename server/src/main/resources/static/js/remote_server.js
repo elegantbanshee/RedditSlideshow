@@ -21,6 +21,10 @@ remote.getRandomString = function () {
     return randomString;
 };
 
+remote.pause = function () {
+    paused = !paused; // simple.js
+};
+
 remote.doLogic = function () {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
@@ -32,6 +36,9 @@ remote.doLogic = function () {
                     break;
                 case "OP_NEXT":
                     remote.moveRight()
+                    break;
+                case "OP_PAUSE":
+                    remote.pause();
                     break;
                 default:
                     //if (json.command !== "undefined" && json.command !== null)

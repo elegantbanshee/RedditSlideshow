@@ -3,6 +3,7 @@ var index = 0;
 var playInterval = null;
 var page = "";
 var downloading = false;
+var paused = false;
 
 function clearIntervalAndPlay() {
     clearInterval(playInterval);
@@ -58,7 +59,7 @@ function setTitle() {
 }
 
 function play(force) {
-    if (images.length > 0) {
+    if (images.length > 0 && !paused) {
         var img = document.getElementById("image");
         var video = document.getElementById("video");
 
