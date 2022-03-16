@@ -25,9 +25,15 @@ A few env vars need to be present to run.
 The port that will be used for web traffic
 
 ## REDDIT_CLIENT_ID
+Deprecated
 
 App client ID from Reddit
 
 ## REDDIT_CLIENT_SECRET
+Deprecated
 
 App secret from Reddit
+
+## REDIS_URL
+
+Redis URL string
