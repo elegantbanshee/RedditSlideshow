@@ -56,7 +56,12 @@ public class RedditSlideshowServer {
 
                 if (matcher.find()) {
                     url = convertGifvToMp4Url(url);
-                    urls.put(url);
+
+                    JSONObject urlJsonObj = new JSONObject();
+                    urlJsonObj.put("url", url);
+                    urlJsonObj.put("title", jsonUrl.getJSONObject("data").getString("title"));
+                    urlJsonObj.put("subreddit", jsonUrl.getJSONObject("data").getString("subreddit"));
+                    urls.put(urlJsonObj);
                 }
             }
 

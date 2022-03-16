@@ -18,6 +18,11 @@ function get_images() {
     request.send(reg.exec(window.location.href)[1] + ";" + page);
 }
 
+function setTitle() {
+    var title = document.getElementById("title");
+    title.innerHTML = "/r/" + images[index].subreddit + " | " + images[index].title;
+}
+
 function play() {
     if (images.length > 0) {
         var img = document.getElementById("image");
@@ -33,7 +38,7 @@ function play() {
             return;
 
         // Update to next image
-        var isImage = images[index].search(".mp4") === -1;
+        var isImage = images[index].url.search(".mp4") === -1;
 
         if (isImage) {
             var newImg = document.createElement("img");
@@ -42,16 +47,19 @@ function play() {
             document.body.appendChild(newImg);
             img = newImg;
 
-            img.src = images[index];
+            img.src = images[index].url;
             img.style.display = "block";
             video.style.display = "none";
         }
         else {
-            video.src = images[index];
+            video.src = images[index].url;
             video.style.display = "block";
             img.style.display = "none";
             video.play();
         }
+
+        setTitle();
+
         index++;
         if (images.length === index) {
             index = 0;
