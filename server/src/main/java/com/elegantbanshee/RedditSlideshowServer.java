@@ -4,6 +4,7 @@ import com.elegantbanshee.util.LoginThread;
 import com.goebl.david.Response;
 import com.goebl.david.Webb;
 import com.google.gson.Gson;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.ModelAndView;
 
@@ -35,29 +36,35 @@ public class RedditSlideshowServer {
             if (!LoginThread.bearerToken.isEmpty())
                 webb.setDefaultHeader("Authorization", "Bearer " + LoginThread.bearerToken);
 
-            String[] subreddits = request.body().split("[+\\s]");
-            ArrayList<ArrayList<String>> urls = new ArrayList<>();
-            urls.ensureCapacity(250);
+            String[] subredditsPage = request.body().split("[;]");
+            String pageString = subredditsPage.length == 2 ? subredditsPage[1] : "";
+            String subreddits = subredditsPage[0];
 
-            int index = 0;
-            for (String subreddit : subreddits) {
-                com.goebl.david.Response <String> html = webb.get("/r/" + subreddit).ensureSuccess().asString();
-                //Pattern pattern = Pattern.compile("https:\\/\\/[A-Za-z\\.]*\\/[A-Za-z\\d]*\\.(?:jpeg|png|jpg|gif)", Pattern.MULTILINE);
+            com.goebl.david.Response <JSONObject> json = webb.get(
+                    String.format("/r/%s.json?after=%s", subreddits, pageString))
+                    .ensureSuccess().asJsonObject();
+
+            JSONArray urls = new JSONArray();
+            JSONArray jsonUrls = json.getBody().getJSONObject("data").getJSONArray("children");
+
+            for (Object jsonUrlObj : jsonUrls) {
+                JSONObject jsonUrl = (JSONObject) jsonUrlObj;
+                String url = jsonUrl.getJSONObject("data").getString("url");
+
                 Pattern pattern = Pattern.compile("https:\\/\\/(?:i.redd.it|i.imgur.com)*\\/[A-Za-z\\d]*\\.(?:jpeg|png|jpg|gifv|gif)");
-                Matcher matcher = pattern.matcher(html.getBody());
+                Matcher matcher = pattern.matcher(url);
 
-                if (urls.size() == index)
-                    urls.add(new ArrayList<>());
-                while (matcher.find()) {
-                    String cleanUrl = convertGifvToMp4Url(matcher.group());
-                    urls.get(index).add(cleanUrl);
+                if (matcher.find()) {
+                    url = convertGifvToMp4Url(url);
+                    urls.put(url);
                 }
-                index += 1;
             }
 
-            ArrayList<String> mixedUrls = mixUrls(urls);
+            JSONObject returnJson = new JSONObject();
+            returnJson.put("data", urls);
+            returnJson.put("after", json.getBody().getJSONObject("data").getString("after"));
 
-            return new Gson().toJson(mixedUrls);
+            return returnJson.toString();
         });
     }
 
@@ -80,29 +87,6 @@ public class RedditSlideshowServer {
         LoginThread.refreshToken = (String) json.getBody().get("refresh_token");
 
         LoginThread.lastRefreshTime = System.currentTimeMillis();
-    }
-
-    private static ArrayList<String> mixUrls(ArrayList<ArrayList<String>> urls) {
-        ArrayList<String> mixedUrls = new ArrayList<>();
-        int index = 0;
-        while (hasUrls(urls)) {
-            ArrayList<String> urlz = urls.get(index);
-            if (urlz.size() > 0) {
-                String url = urlz.remove(0);
-                if (!mixedUrls.contains(url))
-                    mixedUrls.add(url);
-            }
-            index = (index + 1) % urls.size();
-        }
-        return mixedUrls;
-    }
-
-    private static boolean hasUrls(ArrayList<ArrayList<String>> urls) {
-        for (ArrayList<String> urlz : urls) {
-            if (urlz.size() > 0)
-                return true;
-        }
-        return false;
     }
 
     private static String convertGifvToMp4Url(String url) {

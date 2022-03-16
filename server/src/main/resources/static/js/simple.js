@@ -1,19 +1,21 @@
 var images = [];
 var index = 0;
 var playInterval = null;
+var page = "";
 
 function get_images() {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           var json = JSON.parse(this.responseText);
-          images = json;
+          images = json.data;
+          page = json.after;
         }
     }
     request.open("POST", "/api/data");
     request.setRequestHeader("Content-Type", "text/plain");
     var reg = /https?:\/\/[A-Za-z\.:\d]*\/r\/(.*)/
-    request.send(reg.exec(window.location.href)[1]);
+    request.send(reg.exec(window.location.href)[1] + ";" + page);
 }
 
 function play() {
@@ -51,6 +53,10 @@ function play() {
             video.play();
         }
         index++;
+        if (images.length === index) {
+            index = 0;
+            get_images();
+        }
     }
 }
 
