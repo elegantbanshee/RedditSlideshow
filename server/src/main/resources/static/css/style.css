@@ -22,6 +22,12 @@ body {
     z-index: 2;
 }
 
+.remote-button {
+    width: 50%;
+    height: 25%;
+    float: left;
+}
+
 #title {
     float: left;
     border: 20px;
