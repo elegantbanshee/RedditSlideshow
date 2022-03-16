@@ -2,20 +2,49 @@ var images = [];
 var index = 0;
 var playInterval = null;
 var page = "";
+var downloading = false;
+
+function clearIntervalAndPlay() {
+    clearInterval(playInterval);
+    playInterval = setInterval(play, 5000);
+    play();
+}
+
+function handleButtonClick() {
+    index = parseInt(this.innerText) - 1;
+    clearIntervalAndPlay();
+}
+
+function addIndexButtons() {
+    var buttonContainer = document.getElementById("buttons");
+    buttonContainer.innerHTML = "";
+
+    for (var buttonIndex = 0; buttonIndex < images.length; buttonIndex++) {
+        var button = document.createElement("div");
+        button.className = "button";
+        button.innerHTML = buttonIndex + 1;
+        button.addEventListener("click", handleButtonClick);
+        buttonContainer.appendChild(button);
+    }
+}
 
 function get_images() {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           var json = JSON.parse(this.responseText);
-          images = json.data;
+          for (var imageIndex = 0; imageIndex < json.data.length; imageIndex++)
+              images.push(json.data[imageIndex]);
           page = json.after;
+          addIndexButtons();
+          downloading = false;
         }
     }
     request.open("POST", "/api/data");
     request.setRequestHeader("Content-Type", "text/plain");
     var reg = /https?:\/\/[A-Za-z\.:\d]*\/r\/(.*)/
     request.send(reg.exec(window.location.href)[1] + ";" + page);
+    downloading = true;
 }
 
 function setTitle() {
@@ -61,17 +90,13 @@ function play() {
         setTitle();
 
         index++;
-        if (images.length === index) {
-            index = 0;
+        if (images.length === index)
             get_images();
-        }
     }
 }
 
 function onVideoEnded() {
-    clearInterval(playInterval);
-    playInterval = setInterval(play, 5000);
-    play();
+    clearIntervalAndPlay();
 }
 
 function initPlayLoop() {
