@@ -2,6 +2,7 @@ package com.elegantbanshee;
 
 import com.elegantbanshee.data.Constants;
 import com.elegantbanshee.util.Logger;
+import com.elegantbanshee.util.LoginThread;
 
 import java.util.logging.Level;
 
@@ -33,6 +34,9 @@ public class RedditSlideshow {
         RedditSlideshowServer.postApi("/api/data");
         RedditSlideshowServer.getLogin("/login", "login.hbs");
         RedditSlideshowServer.getBotAuth("/bot");
+        // Login thread
+        LoginThread loginThread = new LoginThread();
+        loginThread.start();
 	}
 
 	/**

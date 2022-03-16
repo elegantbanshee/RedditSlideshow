@@ -1,5 +1,6 @@
 package com.elegantbanshee;
 
+import com.elegantbanshee.util.LoginThread;
 import com.goebl.david.Response;
 import com.goebl.david.Webb;
 import com.google.gson.Gson;
@@ -16,10 +17,6 @@ import java.util.regex.Pattern;
 
 public class RedditSlideshowServer {
 
-    private static String bearerToken = "";
-    private static String refreshToken = "";
-    private static long lastRefreshTime = 0;
-
     static void getGeneric(String path, String templatePath) {
         get(path, (request, response) -> {
             Map<String, Object> model = new HashMap<>();
@@ -29,17 +26,14 @@ public class RedditSlideshowServer {
 
     static void postApi(String path) {
         post(path, (request, response) -> {
-            if (shouldRefreshAccessToken()) {
-                refreshAccessToken();
-            }
 
             Webb webb = Webb.create();
             webb.setBaseUri("https://reddit.com");
             webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RedditSlideshow/1.0");
             webb.setDefaultHeader("NSFW-ON", "ON");
 
-            if (!bearerToken.isEmpty())
-                webb.setDefaultHeader("Authorization", "Bearer " + bearerToken);
+            if (!LoginThread.bearerToken.isEmpty())
+                webb.setDefaultHeader("Authorization", "Bearer " + LoginThread.bearerToken);
 
             String[] subreddits = request.body().split("[+\\s]");
             ArrayList<ArrayList<String>> urls = new ArrayList<>();
@@ -67,7 +61,7 @@ public class RedditSlideshowServer {
         });
     }
 
-    private static void refreshAccessToken() {
+    public static void refreshAccessToken() {
         Webb webb = Webb.create();
         webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RSlideshow/1.0");
 
@@ -79,17 +73,13 @@ public class RedditSlideshowServer {
         webb.setBaseUri("https://www.reddit.com/api/v1");
         webb.setDefaultHeader("Content-Type", "application/x-www-form-urlencoded");
         Response<JSONObject> json = webb.post("/access_token")
-                .body(String.format("grant_type=refresh_token&refresh_token=%s", refreshToken))
+                .body(String.format("grant_type=refresh_token&refresh_token=%s", LoginThread.refreshToken))
                 //.ensureSuccess()
                 .asJsonObject();
-        bearerToken = (String) json.getBody().get("access_token");
-        refreshToken = (String) json.getBody().get("refresh_token");
+        LoginThread.bearerToken = (String) json.getBody().get("access_token");
+        LoginThread.refreshToken = (String) json.getBody().get("refresh_token");
 
-        lastRefreshTime = System.currentTimeMillis();
-    }
-
-    private static boolean shouldRefreshAccessToken() {
-        return !refreshToken.isEmpty() && System.currentTimeMillis() - lastRefreshTime > 1 * 60 * 1000;
+        LoginThread.lastRefreshTime = System.currentTimeMillis();
     }
 
     private static ArrayList<String> mixUrls(ArrayList<ArrayList<String>> urls) {
@@ -121,7 +111,7 @@ public class RedditSlideshowServer {
 
     public static void getBotAuth(String path) {
         get(path, (request, response) -> {
-            if (!bearerToken.isEmpty())
+            if (!LoginThread.bearerToken.isEmpty())
                 return "Already logged in";
 
             Webb webb = Webb.create();
@@ -141,10 +131,10 @@ public class RedditSlideshowServer {
                             request.queryParams("code")))
                     //.ensureSuccess()
                     .asJsonObject();
-            bearerToken = (String) json.getBody().get("access_token");
-            refreshToken = (String) json.getBody().get("refresh_token");
+            LoginThread.bearerToken = (String) json.getBody().get("access_token");
+            LoginThread.refreshToken = (String) json.getBody().get("refresh_token");
 
-            lastRefreshTime = System.currentTimeMillis();
+            LoginThread.lastRefreshTime = System.currentTimeMillis();
             return "Logged in";
         });
     }
