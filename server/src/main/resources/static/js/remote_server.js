@@ -25,6 +25,10 @@ remote.pause = function () {
     paused = !paused; // simple.js
 };
 
+remote.favorite = function () {
+    favorite.handleFavorite();
+};
+
 remote.doLogic = function () {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
@@ -40,6 +44,8 @@ remote.doLogic = function () {
                 case "OP_PAUSE":
                     remote.pause();
                     break;
+                case "OP_FAVORITE":
+                    remote.favorite();
                 default:
                     //if (json.command !== "undefined" && json.command !== null)
                     //    console.log("Unhandled message: " + json.command)

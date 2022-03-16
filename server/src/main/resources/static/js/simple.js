@@ -29,7 +29,22 @@ function addIndexButtons() {
     }
 }
 
+function isRootWebsite() {
+    return window.location.toString().indexOf("/r/") === -1 &&
+        window.localStorage.getItem("favorites") != null;
+}
+
+function getImagesFromLocalStorage() {
+    var faves = window.localStorage.getItem("favorites");
+    images = JSON.parse(faves);
+    addIndexButtons();
+}
+
 function get_images() {
+    if (isRootWebsite()) {
+        getImagesFromLocalStorage();
+        return;
+    }
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
