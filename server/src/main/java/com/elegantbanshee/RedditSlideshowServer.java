@@ -69,6 +69,8 @@ public class RedditSlideshowServer {
             returnJson.put("data", urls);
             returnJson.put("after", json.getBody().getJSONObject("data").getString("after"));
 
+            response.header("Access-Control-Allow-Origin", "https://rolando.org");
+
             return returnJson.toString();
         });
     }
