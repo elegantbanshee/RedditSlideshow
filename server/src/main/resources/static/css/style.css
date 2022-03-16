@@ -58,6 +58,7 @@ body {
     border: 1px solid white;
     margin: 0 0 0 10px;
     font-size: 25px;
+    cursor: pointer;
 }
 
 #remote {
@@ -70,7 +71,7 @@ body {
     float: left;
     z-index: 3;
     overflow: hidden;
-    cursor: hand;
+    cursor: pointer;
 }
 
 .avoid-clicks {
