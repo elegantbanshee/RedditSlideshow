@@ -43,7 +43,12 @@ function get_images() {
     request.open("POST", "/api/data");
     request.setRequestHeader("Content-Type", "text/plain");
     var reg = /https?:\/\/[A-Za-z\.:\d]*\/r\/(.*)/;
-    request.send(reg.exec(window.location.href)[1] + ";" + page);
+    var subreddits = reg.exec(window.location.href);
+    if (subreddits === null)
+        subreddits = "popular"
+    else
+        subreddits = subreddits[1];
+    request.send(subreddits + ";" + page);
     downloading = true;
 }
 
