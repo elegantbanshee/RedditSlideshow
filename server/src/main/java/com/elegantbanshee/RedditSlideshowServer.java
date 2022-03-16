@@ -1,9 +1,9 @@
 package com.elegantbanshee;
 
 import com.elegantbanshee.util.LoginThread;
+import com.elegantbanshee.util.RedisUtil;
 import com.goebl.david.Response;
 import com.goebl.david.Webb;
-import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.ModelAndView;
@@ -135,6 +135,23 @@ public class RedditSlideshowServer {
             Map<String, Object> model = new HashMap<>();
             model.put("CLIENT_ID", System.getenv("REDDIT_CLIENT_ID"));
             return new HandlebarsTemplateEngine().render(new ModelAndView(model, templatePath));
+        });
+    }
+
+    public static void postRemoteClient(String path) {
+        post(path, (request, response) -> {
+            String[] codeAndCommand = request.body().split(";");
+            RedisUtil.storeCommand(codeAndCommand[0], codeAndCommand[1]);
+            return "";
+        });
+    }
+
+    public static void getRemoteServer(String path) {
+        get(path, (request, response) -> {
+            String command =  RedisUtil.getCommand(request.queryParams("code"));
+            JSONObject json = new JSONObject();
+            json.put("command", command);
+            return json.toString();
         });
     }
 }

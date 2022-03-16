@@ -7,7 +7,7 @@ var downloading = false;
 function clearIntervalAndPlay() {
     clearInterval(playInterval);
     playInterval = setInterval(play, 5000);
-    play();
+    play(true);
 }
 
 function handleButtonClick() {
@@ -42,7 +42,7 @@ function get_images() {
     }
     request.open("POST", "/api/data");
     request.setRequestHeader("Content-Type", "text/plain");
-    var reg = /https?:\/\/[A-Za-z\.:\d]*\/r\/(.*)/
+    var reg = /https?:\/\/[A-Za-z\.:\d]*\/r\/(.*)/;
     request.send(reg.exec(window.location.href)[1] + ";" + page);
     downloading = true;
 }
@@ -52,7 +52,7 @@ function setTitle() {
     title.innerHTML = "/r/" + images[index].subreddit + " | " + images[index].title;
 }
 
-function play() {
+function play(force) {
     if (images.length > 0) {
         var img = document.getElementById("image");
         var video = document.getElementById("video");
@@ -60,10 +60,10 @@ function play() {
         // CHeck if a stall is in order
         var isCurrentImage = img.style.display === "block";
 
-        if (!isCurrentImage && !video.ended && video.currentTime > 0)
+        if (!isCurrentImage && !video.ended && video.currentTime > 0 && !force)
             return;
 
-        if (isCurrentImage && !img.complete)
+        if (isCurrentImage && !img.complete && !force)
             return;
 
         // Update to next image

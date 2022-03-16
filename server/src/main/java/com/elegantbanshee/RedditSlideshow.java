@@ -3,6 +3,7 @@ package com.elegantbanshee;
 import com.elegantbanshee.data.Constants;
 import com.elegantbanshee.util.Logger;
 import com.elegantbanshee.util.LoginThread;
+import com.elegantbanshee.util.RedisUtil;
 
 import java.util.logging.Level;
 
@@ -34,9 +35,15 @@ public class RedditSlideshow {
         RedditSlideshowServer.postApi("/api/data");
         RedditSlideshowServer.getLogin("/login", "login.hbs");
         RedditSlideshowServer.getBotAuth("/bot");
+        RedditSlideshowServer.getGeneric("/remote/:code", "remote.hbs");
+        RedditSlideshowServer.postRemoteClient("/api//remote/client");
+        RedditSlideshowServer.getRemoteServer("/api//remote/server");
         // Login thread
         LoginThread loginThread = new LoginThread();
         loginThread.start();
+        // REDIS
+        String redisUrl = System.getenv("REDIS_URL");
+        RedisUtil.start(redisUrl);
 	}
 
 	/**

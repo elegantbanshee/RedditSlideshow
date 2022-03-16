@@ -53,3 +53,20 @@ body {
     margin: 0 0 0 10px;
     font-size: 25px;
 }
+
+#remote {
+    width: 60px;
+    height: 16px;
+    position: absolute;
+    color: white;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    float: left;
+    z-index: 3;
+    overflow: hidden;
+    cursor: hand;
+}
+
+.avoid-clicks {
+    pointer-events: none;
+}
