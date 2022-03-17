@@ -30,8 +30,9 @@ function addIndexButtons() {
 }
 
 function isRootWebsite() {
+    var faves = JSON.parse(window.localStorage.getItem("favorites"));
     return window.location.toString().indexOf("/r/") === -1 &&
-        window.localStorage.getItem("favorites") != null;
+        faves != null && faves.length > 0;
 }
 
 function getImagesFromLocalStorage() {
@@ -127,9 +128,22 @@ function initPlayLoop() {
     video.addEventListener("ended", onVideoEnded);
 }
 
+function addButtonEvents() {
+    var next = document.getElementById("next");
+    var previous = document.getElementById("previous");
+    var pause = document.getElementById("pause");
+    var favorite = document.getElementById("favorite");
+
+    next.addEventListener("click", remote.moveRight);
+    previous.addEventListener("click", remote.moveLeft);
+    pause.addEventListener("click", remote.pause);
+    favorite.addEventListener("click", remote.favorite);
+}
+
 function main() {
     get_images();
     initPlayLoop();
+    addButtonEvents();
 }
 
-main();
+window.addEventListener("load", main)

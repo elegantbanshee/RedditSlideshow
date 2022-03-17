@@ -70,7 +70,7 @@ remote.main = function () {
         }
 
         var reg = /(https?:\/\/[A-Za-z\.:\d]*\/?)r?\/?.*/;
-        alert("Go to " + reg.exec(window.location.href)[1] + "remote/" + remote.code);
+        alert(reg.exec(window.location.href)[1] + "remote/" + remote.code);
     });
 };
 
