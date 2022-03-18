@@ -5,9 +5,13 @@ var page = "";
 var downloading = false;
 var paused = false;
 
-function clearIntervalAndPlay() {
+function clearIntervalOnly() {
     clearInterval(playInterval);
     playInterval = setInterval(play, 5000);
+}
+
+function clearIntervalAndPlay() {
+    clearIntervalOnly();
     play(true);
 }
 
@@ -102,6 +106,10 @@ function play(force) {
             img.src = images[index].url;
             img.style.display = "block";
             video.style.display = "none";
+
+            img.addEventListener("load", function () {
+                clearIntervalOnly();
+            });
         }
         else {
             video.src = images[index].url;
