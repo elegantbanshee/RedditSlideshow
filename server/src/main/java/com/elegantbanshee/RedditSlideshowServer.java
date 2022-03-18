@@ -44,7 +44,8 @@ public class RedditSlideshowServer {
             JSONArray pagesNew = new JSONArray();
 
             for (String subreddit : subreddits) {
-                String page = pages.getString(Arrays.asList(subreddits).indexOf(subreddit));
+                int index = Arrays.asList(subreddits).indexOf(subreddit);
+                String page = pages.getString(index);
                 JSONArray images = getSubredditJson(subreddit, page);
 
                 if (images.length() > 0)
