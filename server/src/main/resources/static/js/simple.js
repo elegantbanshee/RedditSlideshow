@@ -1,7 +1,7 @@
 var images = [];
 var index = 0;
 var playInterval = null;
-var page = "";
+var page = [];
 var downloading = false;
 var paused = false;
 
@@ -46,6 +46,15 @@ function getImagesFromLocalStorage() {
     addIndexButtons();
 }
 
+function populatePage(subreddits) {
+    if (page.length > 0)
+        return;
+    var subredditsArrray = subreddits.split("+");
+    for (var subredditIndex = 0; subredditIndex < subredditsArrray.length; subredditIndex++) {
+        page.push("");
+    }
+}
+
 function get_images() {
     if (isRootWebsite()) {
         getImagesFromLocalStorage();
@@ -70,7 +79,8 @@ function get_images() {
         subreddits = "popular"
     else
         subreddits = subreddits[1];
-    request.send(subreddits + ";" + page);
+    populatePage(subreddits);
+    request.send(subreddits + ";" + JSON.stringify(page));
     downloading = true;
 }
 
