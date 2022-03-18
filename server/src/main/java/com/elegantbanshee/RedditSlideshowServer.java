@@ -38,7 +38,10 @@ public class RedditSlideshowServer {
 
             String[] subredditsPage = request.body().split("[;]");
             String pageString = subredditsPage.length == 2 ? subredditsPage[1] : "";
-            String subreddits = subredditsPage[0];
+            String subreddits = subredditsPage.length >= 1 ? subredditsPage[0] : "";
+
+            if (subreddits.isEmpty())
+                subreddits = "popular";
 
             com.goebl.david.Response <JSONObject> json = webb.get(
                     String.format("/r/%s.json?after=%s", subreddits, pageString))
