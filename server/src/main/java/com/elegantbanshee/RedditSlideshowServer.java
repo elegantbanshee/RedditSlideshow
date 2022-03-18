@@ -4,6 +4,7 @@ import com.elegantbanshee.util.LoginThread;
 import com.elegantbanshee.util.RedisUtil;
 import com.goebl.david.Response;
 import com.goebl.david.Webb;
+import com.goebl.david.WebbException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.ModelAndView;
@@ -106,9 +107,16 @@ public class RedditSlideshowServer {
         if (!LoginThread.bearerToken.isEmpty())
             webb.setDefaultHeader("Authorization", "Bearer " + LoginThread.bearerToken);
 
-        com.goebl.david.Response <JSONObject> json = webb.get(
-                        String.format("/r/%s.json?after=%s", subreddit, page))
-                .ensureSuccess().asJsonObject();
+        com.goebl.david.Response <JSONObject> json;
+
+        try {
+            json = webb.get(
+                            String.format("/r/%s.json?after=%s", subreddit, page))
+                    .ensureSuccess().asJsonObject();
+        }
+        catch (WebbException e) {
+            return new JSONArray();
+        }
 
         JSONArray urls = new JSONArray();
         JSONArray jsonUrls = json.getBody().getJSONObject("data").getJSONArray("children");
