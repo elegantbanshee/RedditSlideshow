@@ -38,6 +38,7 @@ function isRootWebsite() {
 function getImagesFromLocalStorage() {
     var faves = window.localStorage.getItem("favorites");
     images = JSON.parse(faves);
+    index = 0;
     addIndexButtons();
 }
 
