@@ -9,7 +9,6 @@ remote.moveLeft = function () {
 };
 
 remote.moveRight = function () {
-    index++; // simple.js
     clearIntervalAndPlay();
 };
 
