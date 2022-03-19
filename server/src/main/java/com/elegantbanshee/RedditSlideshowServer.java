@@ -46,12 +46,10 @@ public class RedditSlideshowServer {
             for (String subreddit : subreddits) {
                 int index = Arrays.asList(subreddits).indexOf(subreddit);
                 String page = pages.getString(index);
-                JSONArray images = getSubredditJson(subreddit, page);
+                JSONObject imagesObject = getSubredditJson(subreddit, page);
+                JSONArray images = imagesObject.getJSONArray("images");
 
-                if (images.length() > 0)
-                    pagesNew.put(((JSONObject)images.get(0)).getString("page"));
-                else
-                    pagesNew.put("");
+                pagesNew.put(imagesObject.getString("page"));
 
                 subredditsJson.add(images);
             }
@@ -99,7 +97,11 @@ public class RedditSlideshowServer {
         return false;
     }
 
-    private static JSONArray getSubredditJson(String subreddit, String page) {
+    private static JSONObject getSubredditJson(String subreddit, String page) {
+        JSONObject ret = new JSONObject();
+        ret.put("images", new JSONArray());
+        ret.put("page", "");
+
         Webb webb = Webb.create();
         webb.setBaseUri("https://reddit.com");
         webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RedditSlideshow/1.0");
@@ -116,7 +118,7 @@ public class RedditSlideshowServer {
                     .ensureSuccess().asJsonObject();
         }
         catch (WebbException e) {
-            return new JSONArray();
+            return ret;
         }
 
         JSONArray urls = new JSONArray();
@@ -136,11 +138,12 @@ public class RedditSlideshowServer {
                 urlJsonObj.put("url", url);
                 urlJsonObj.put("title", jsonUrl.getJSONObject("data").getString("title"));
                 urlJsonObj.put("subreddit", jsonUrl.getJSONObject("data").getString("subreddit"));
-                urlJsonObj.put("page", json.getBody().getJSONObject("data").getString("after"));
                 urls.put(urlJsonObj);
             }
         }
-        return urls;
+        ret.put("page", json.getBody().getJSONObject("data").getString("after"));
+        ret.put("images", urls);
+        return ret;
     }
 
     public static void refreshAccessToken() {
