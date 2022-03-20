@@ -48,8 +48,8 @@ public class RedditSlideshowServer {
                 String page = pages.getString(index);
                 JSONObject imagesObject = getSubredditJson(subreddit, page);
                 JSONArray images = imagesObject.getJSONArray("images");
-
-                pagesNew.put(imagesObject.getString("page"));
+                String newPage = imagesObject.getString("page");
+                pagesNew.put(newPage);
 
                 subredditsJson.add(images);
             }
@@ -102,6 +102,11 @@ public class RedditSlideshowServer {
         ret.put("images", new JSONArray());
         ret.put("page", "");
 
+        if (page.equals("none")) {
+            ret.put("page", "none");
+            return ret;
+        }
+
         Webb webb = Webb.create();
         webb.setBaseUri("https://reddit.com");
         webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RedditSlideshow/1.0");
@@ -118,6 +123,7 @@ public class RedditSlideshowServer {
                     .ensureSuccess().asJsonObject();
         }
         catch (WebbException e) {
+            ret.put("page", "none");
             return ret;
         }
 
