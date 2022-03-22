@@ -6,6 +6,7 @@ import com.goebl.david.Response;
 import com.goebl.david.Webb;
 import com.goebl.david.WebbException;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import spark.ModelAndView;
 
@@ -147,7 +148,15 @@ public class RedditSlideshowServer {
                 urls.put(urlJsonObj);
             }
         }
-        ret.put("page", json.getBody().getJSONObject("data").getString("after"));
+
+        String after = "";
+        try {
+            after = json.getBody().getJSONObject("data").getString("after");
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        ret.put("page", after);
         ret.put("images", urls);
         return ret;
     }
