@@ -33,8 +33,8 @@ public class RedditSlideshow {
         RedditSlideshowServer.getGeneric("/", "index.hbs");
         RedditSlideshowServer.getGeneric("/r/:reddits", "index.hbs");
         RedditSlideshowServer.postApi("/api/data");
-        RedditSlideshowServer.getLogin("/login", "login.hbs");
-        RedditSlideshowServer.getBotAuth("/bot");
+        //RedditSlideshowServer.getLogin("/login", "login.hbs");
+        //RedditSlideshowServer.getBotAuth("/bot");
         RedditSlideshowServer.getGeneric("/remote/:code", "remote.hbs");
         RedditSlideshowServer.postRemoteClient("/api//remote/client");
         RedditSlideshowServer.getRemoteServer("/api//remote/server");
