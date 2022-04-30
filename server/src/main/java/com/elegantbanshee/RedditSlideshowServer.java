@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 
 public class RedditSlideshowServer {
 
+    private static final String USER_AGENT = "org.rolanndo.RSlideshow/1.0";
+
     static void getGeneric(String path, String templatePath) {
         get(path, (request, response) -> {
             Map<String, Object> model = new HashMap<>();
@@ -110,7 +112,7 @@ public class RedditSlideshowServer {
 
         Webb webb = Webb.create();
         webb.setBaseUri("https://reddit.com");
-        webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RedditSlideshow/1.0");
+        webb.setDefaultHeader(Webb.HDR_USER_AGENT, USER_AGENT);
         webb.setDefaultHeader("NSFW-ON", "ON");
 
         if (!LoginThread.bearerToken.isEmpty())
@@ -163,7 +165,7 @@ public class RedditSlideshowServer {
 
     public static void refreshAccessToken() {
         Webb webb = Webb.create();
-        webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RSlideshow/1.0");
+        webb.setDefaultHeader(Webb.HDR_USER_AGENT, USER_AGENT);
 
         String passwordString = String.format("%s:%s", System.getenv("REDDIT_CLIENT_ID"),
                 System.getenv("REDDIT_CLIENT_SECRET"));
@@ -192,7 +194,7 @@ public class RedditSlideshowServer {
                 return "Already logged in";
 
             Webb webb = Webb.create();
-            webb.setDefaultHeader(Webb.HDR_USER_AGENT, "com.ElegantBanshee.RSlideshow/1.0");
+            webb.setDefaultHeader(Webb.HDR_USER_AGENT, USER_AGENT);
 
 
             String passwordString = String.format("%s:%s", System.getenv("REDDIT_CLIENT_ID"),
